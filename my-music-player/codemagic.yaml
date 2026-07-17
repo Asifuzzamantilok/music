@@ -1,93 +1,61 @@
 ```yaml
-name: my_music_player
-description: >
-  A modern Android music player with offline playback,
-  future online streaming support, home screen widgets,
-  and an optional system-wide floating controller.
+workflows:
+  my-music-player-android:
 
-publish_to: "none"
+    name: My Music Player Android
 
-version: 0.1.0+1
+    max_build_duration: 60
 
-environment:
-  sdk: ">=3.5.0 <4.0.0"
+    environment:
+      flutter: stable
+      xcode: latest
+      vars:
+        PACKAGE_NAME: "com.mymusicplayer.app"
 
-dependencies:
-  flutter:
-    sdk: flutter
+    cache:
+      cache_paths:
+        - $FLUTTER_ROOT/.pub-cache
+        - ~/.gradle/caches
+        - ~/.gradle/wrapper
 
-  cupertino_icons: ^1.0.8
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
 
-  # State Management
-  flutter_riverpod: ^2.6.1
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
 
-  # Navigation
-  go_router: ^15.1.2
+      - name: Analyze project
+        script: |
+          flutter analyze
 
-  # Local Music
-  on_audio_query: ^2.9.0
-  just_audio: ^0.10.4
-  audio_service: ^0.18.18
-  audio_session: ^0.2.2
+      - name: Run tests
+        script: |
+          flutter test
 
-  # Permissions
-  permission_handler: ^12.0.1
+      - name: Build Android APK
+        script: |
+          flutter build apk --release
 
-  # Local Storage
-  shared_preferences: ^2.5.3
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
+      - name: Build Android App Bundle
+        script: |
+          flutter build appbundle --release
 
-  # Utilities
-  path_provider: ^2.1.5
-  intl: ^0.20.2
-  uuid: ^4.5.1
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+      - build/app/outputs/bundle/release/*.aab
 
-  # UI
-  google_fonts: ^6.3.0
-  cached_network_image: ^3.4.1
-  flutter_svg: ^2.2.0
-
-  # Animations
-  flutter_animate: ^4.5.2
-  animations: ^2.0.11
-
-  # Widgets
-  home_widget: ^0.8.0
-
-  # Device Info
-  device_info_plus: ^11.5.0
-  package_info_plus: ^8.3.0
-
-  # Connectivity (for future online mode)
-  connectivity_plus: ^6.1.4
-
-  # Logging
-  logger: ^2.6.1
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-  flutter_lints: ^6.0.0
-
-flutter:
-
-  uses-material-design: true
-
-  assets:
-    - assets/images/
-    - assets/icons/
-    - assets/animations/
-
-  fonts:
-    - family: Poppins
-      fonts:
-        - asset: assets/fonts/Poppins-Regular.ttf
-        - asset: assets/fonts/Poppins-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Poppins-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Poppins-Bold.ttf
-          weight: 700
+    publishing:
+      email:
+        recipients:
+          - tilok.mania@gmail.com
+        notify:
+          success: true
+          failure: true
 ```
