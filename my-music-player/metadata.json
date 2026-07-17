@@ -1,0 +1,6 @@
+{
+  "name": "My Music Player",
+  "description": "A high-performance modern music player for Android with local playback, playlists, recently played, favorites, custom widgets, notifications, and a system-wide floating controller.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
